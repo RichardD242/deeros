@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  --color-deer-bg: #F7F6F2;
+  --color-deer-surface: #FCFBF8;
+  --color-deer-border: #E8E4DD;
+
+  --color-moss: #6F8A71;
+  --color-moss-hover: #7D9B7E;
+
+  --color-oak: #A68467;
+  --color-sand: #DDD3C2;
+  --color-olive: #A5B39A;
+
+  --color-deer-primary: #2E332F;
+  --color-deer-secondary: #6E756F;
+
+  --radius-deer-xl: 16px;
+}
+
+@layer base {
+  body {
+    font-family: 'Cabinet Grotesk', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-deer-primary font-bold;
+  }
+}
