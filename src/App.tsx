@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Button from './components/Button';
 import SignUpModal from './components/SignUpModal';
 import LockScreen from './components/LockScreen';
+import Desktop from './components/Desktop';
 
 const green = '#6F8A71';
 const PASSWORD_KEY = 'deeros_persona_password';
@@ -174,10 +175,12 @@ export default function App() {
           ) : loggedIn && desktopStage === 'canvas' ? (
             <motion.div
               key="canvas"
-              className="w-full h-full bg-deer-bg select-none"
+              className="w-full h-full bg-deer-bg"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1, transition: { duration: 0.5, ease: 'easeOut' } }}
-            />
+            >
+              <Desktop />
+            </motion.div>
           ) : (
             <motion.div
               key="home"
