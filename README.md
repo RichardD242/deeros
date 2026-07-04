@@ -1,6 +1,6 @@
 # DeerOs
 
-A calm almost low cortisol nature web desktop ui built with react
+A calm almost low cortisol nature web desktop ui built with react and typescript
 
 ## Tech Stack
 
