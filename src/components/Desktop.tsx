@@ -1,37 +1,27 @@
 import { useState } from 'react';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import Window from './Window';
 import { apps } from '../apps/registry';
+import { WindowsProvider, useWindows } from '../state/windowsStore';
 
-type OpenWindow = {
-  id: string;
-  appId: string;
-};
+const QUICK_MENU_IDS = ['files', 'settings', 'task-manager'];
 
-export default function Desktop() {
-  const [windows, setWindows] = useState<OpenWindow[]>([]);
-  const [order, setOrder] = useState<string[]>([]);
+function DesktopInner() {
+  const { windows, order, openApp, closeWindow, focusWindow } = useWindows();
   const [selectedApp, setSelectedApp] = useState<string | null>(null);
-
-  const openApp = (appId: string) => {
-    const id = `${appId}-${Date.now()}`;
-    setWindows((w) => [...w, { id, appId }]);
-    setOrder((o) => [...o, id]);
-  };
-
-  const closeWindow = (id: string) => {
-    setWindows((w) => w.filter((win) => win.id !== id));
-    setOrder((o) => o.filter((i) => i !== id));
-  };
-
-  const focusWindow = (id: string) => {
-    setOrder((o) => [...o.filter((i) => i !== id), id]);
-  };
+  const [quickMenuOpen, setQuickMenuOpen] = useState(false);
 
   const activeWindowId = order[order.length - 1];
+  const quickMenuApps = QUICK_MENU_IDS.map((id) => apps.find((a) => a.id === id)!);
 
   return (
-    <div className="relative w-full h-full overflow-hidden" onClick={() => setSelectedApp(null)}>
+    <div
+      className="relative w-full h-full overflow-hidden"
+      onClick={() => {
+        setSelectedApp(null);
+        setQuickMenuOpen(false);
+      }}
+    >
       <img
         src="/transparentdeer.png"
         alt=""
@@ -89,7 +79,43 @@ export default function Desktop() {
         className="absolute bottom-0 left-0 right-0 h-14 flex items-center gap-3 px-3 bg-deer-surface/90 backdrop-blur border-t border-deer-border"
         onClick={(e) => e.stopPropagation()}
       >
-        <img src="/transparentdeer.png" alt="Deer OS" className="w-8 h-8 object-contain select-none" />
+        <div className="relative">
+          <AnimatePresence>
+            {quickMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                transition={{ duration: 0.15 }}
+                className="absolute bottom-12 left-0 w-44 bg-deer-surface border border-deer-border rounded-deer-xl shadow-xl p-1.5 flex flex-col gap-1"
+              >
+                {quickMenuApps.map((app) => (
+                  <button
+                    key={app.id}
+                    onClick={() => {
+                      openApp(app.id);
+                      setQuickMenuOpen(false);
+                    }}
+                    className="flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-deer-primary hover:bg-deer-bg transition-colors"
+                  >
+                    <app.icon size={16} />
+                    {app.name}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <img
+            src="/transparentdeer.png"
+            alt="Deer OS"
+            onClick={(e) => {
+              e.stopPropagation();
+              setQuickMenuOpen((o) => !o);
+            }}
+            className="w-8 h-8 object-contain select-none cursor-pointer"
+          />
+        </div>
 
         <div className="w-px h-7 bg-deer-border" />
 
@@ -113,5 +139,13 @@ export default function Desktop() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Desktop() {
+  return (
+    <WindowsProvider>
+      <DesktopInner />
+    </WindowsProvider>
   );
 }

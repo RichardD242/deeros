@@ -5,13 +5,13 @@ import { FileCode2, Search } from "lucide-react";
 
 export default function FilesApp() {
     return (
-        <div className="flex h-full flex-col bg-deer-primary text-deer-bg">
+        <div className="flex h-full flex-col bg-deer-surface text-deer-primary">
             <div className="border-b border-white/10 p-4">
                 <div className="flex items-center gap-3 rounded-xl bg-white/10 px-3 py-2">
                     <Search size={18} className="opacity-60" />
                     <input
                         placeholder="search files..."
-                        className="flex-1 bg-transparent outline-none text-sm placeholder:text-deer-bg/50"
+                        className="flex-1 bg-transparent outline-none text-sm placeholder:text-deer-primary/50"
                     />
                 </div>
             </div>

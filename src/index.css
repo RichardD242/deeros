@@ -18,6 +18,15 @@
   --radius-deer-xl: 16px;
 }
 
+.dark {
+  --color-deer-bg: #1C1E1B;
+  --color-deer-surface: #24261F;
+  --color-deer-border: #34372F;
+
+  --color-deer-primary: #F1EFE9;
+  --color-deer-secondary: #A8AC9F;
+}
+
 @layer base {
   body {
     font-family: 'Cabinet Grotesk', sans-serif;

@@ -85,7 +85,7 @@ export default function CalculatorApp() {
         setResetNext(true);
     };
 
-    const numberBtn = 'bg-white/10 text-deer-bg hover:bg-white/20';
+    const numberBtn = 'bg-deer-bg text-deer-primary hover:bg-deer-border';
     const functionBtn = 'bg-sand text-deer-primary hover:bg-sand/80';
     const operatorBtn = (op: Exclude<Operator, null>) =>
         operator === op && resetNext
@@ -96,10 +96,10 @@ export default function CalculatorApp() {
     const circleBtn = `${baseBtn} aspect-square`;
 
     return (
-        <div className="w-full h-full flex flex-col items-center justify-center bg-deer-primary">
+        <div className="w-full h-full flex flex-col items-center justify-center bg-deer-surface">
         <div className="w-full max-w-sm h-full flex flex-col gap-4 p-5">
             <div className="flex-1 flex items-end justify-end overflow-hidden">
-                <span className="text-deer-bg text-5xl font-light truncate">{display}</span>
+                <span className="text-deer-primary text-5xl font-light truncate">{display}</span>
             </div>
 
             <div className="grid grid-cols-4 gap-3">

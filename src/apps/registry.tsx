@@ -1,8 +1,10 @@
 import type { ComponentType } from 'react';
-import { NotebookPen, Calculator as CalculatorIcon, FolderOpen } from 'lucide-react';
+import { NotebookPen, Calculator as CalculatorIcon, FolderOpen, Settings, AppWindow } from 'lucide-react';
 import NotesApp from './Notes';
 import CalculatorApp from './CalculatorApp';
 import FilesApp from './Files';
+import SettingsApp from './Settings';
+import TaskManagerApp from './TaskManager';
 
 export type AppDef = {
   id: string;
@@ -16,7 +18,7 @@ export type AppDef = {
 export const apps: AppDef[] = [
   {
     id: 'notes',
-    name: 'Notes',
+    name: 'notes',
     icon: NotebookPen,
     defaultWidth: 420,
     defaultHeight: 380,
@@ -24,7 +26,7 @@ export const apps: AppDef[] = [
   },
   {
     id: 'calculator',
-    name: 'Calculator',
+    name: 'calculator',
     icon: CalculatorIcon,
     defaultWidth: 380,
     defaultHeight: 600,
@@ -32,10 +34,26 @@ export const apps: AppDef[] = [
   },
   {
     id: 'files',
-    name: 'Files',
+    name: 'files',
     icon: FolderOpen,
     defaultWidth: 500,
     defaultHeight: 400,
     component: FilesApp,
-  }
+  },
+  {
+    id: 'settings',
+    name: 'settings',
+    icon: Settings,
+    defaultWidth: 420,
+    defaultHeight: 400,
+    component: SettingsApp,
+  },
+  {
+    id: 'task-manager',
+    name: 'task manager',
+    icon: AppWindow,
+    defaultWidth: 380,
+    defaultHeight: 420,
+    component: TaskManagerApp,
+  },
 ];
