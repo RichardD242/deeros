@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react';
-import { NotebookPen, Calculator as CalculatorIcon, FolderOpen, Settings, AppWindow, Clock3, Settings2, Gamepad2, Sparkles } from 'lucide-react';
+import { NotebookPen, Calculator as CalculatorIcon, FolderOpen, Settings, AppWindow, Clock3, Settings2, Gamepad2, Sparkles, CloudRain } from 'lucide-react';
 import NotesApp from './Notes';
 import CalculatorApp from './CalculatorApp';
 import FilesApp from './Files';
@@ -9,6 +9,8 @@ import TimeApp from './Time';
 import TimeSettingsApp from './TimeSettings';
 import GamesApp from './Games';
 import WelcomeApp from './Welcome';
+import WeatherApp from './Weather';
+import WeatherSettingsApp from './WeatherSettings';
 
 export type AppDef = {
   id: string;
@@ -91,5 +93,21 @@ export const apps: AppDef[] = [
     defaultWidth: 520,
     defaultHeight: 480,
     component: GamesApp,
+  },
+  {
+    id: 'weather',
+    name: 'weather',
+    icon: CloudRain,
+    defaultWidth: 340,
+    defaultHeight: 380,
+    component: WeatherApp,
+  },
+  {
+    id: 'weather-settings',
+    name: 'weather settings',
+    icon: Settings2,
+    defaultWidth: 380,
+    defaultHeight: 260,
+    component: WeatherSettingsApp,
   },
 ];
