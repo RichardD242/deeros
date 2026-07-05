@@ -3,11 +3,13 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Window from './Window';
 import { apps } from '../apps/registry';
 import { WindowsProvider, useWindows } from '../state/windowsStore';
+import { useTheme } from '../state/themeStore';
 
 const QUICK_MENU_IDS = ['files', 'settings', 'task-manager'];
 
 function DesktopInner() {
   const { windows, order, openApp, closeWindow, focusWindow } = useWindows();
+  const { darkMode } = useTheme();
   const [selectedApp, setSelectedApp] = useState<string | null>(null);
   const [quickMenuOpen, setQuickMenuOpen] = useState(false);
 
@@ -37,8 +39,10 @@ function DesktopInner() {
               setSelectedApp(app.id);
             }}
             onDoubleClick={() => openApp(app.id)}
-            className={`flex flex-col items-center gap-1.5 select-none py-2 px-1 transition-colors ${
-              selectedApp === app.id ? 'text-moss' : 'text-deer-primary hover:bg-deer-surface/70 rounded-deer-xl'
+            className={`flex flex-col items-center gap-1.5 select-none py-2 px-1 transition-colors rounded-deer-xl ${
+              selectedApp === app.id
+                ? 'text-moss'
+                : `text-deer-primary ${darkMode ? '' : 'hover:bg-deer-surface/70'}`
             }`}
           >
             <span

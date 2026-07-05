@@ -1,10 +1,12 @@
 import type { ComponentType } from 'react';
-import { NotebookPen, Calculator as CalculatorIcon, FolderOpen, Settings, AppWindow } from 'lucide-react';
+import { NotebookPen, Calculator as CalculatorIcon, FolderOpen, Settings, AppWindow, Clock3, Settings2 } from 'lucide-react';
 import NotesApp from './Notes';
 import CalculatorApp from './CalculatorApp';
 import FilesApp from './Files';
 import SettingsApp from './Settings';
 import TaskManagerApp from './TaskManager';
+import TimeApp from './Time';
+import TimeSettingsApp from './TimeSettings';
 
 export type AppDef = {
   id: string;
@@ -56,4 +58,20 @@ export const apps: AppDef[] = [
     defaultHeight: 420,
     component: TaskManagerApp,
   },
+  {
+    id: 'time',
+    name: 'time',
+    icon: Clock3,
+    defaultWidth: 380,
+    defaultHeight: 420,
+    component: TimeApp,
+  },
+  {
+    id: 'time-settings',
+    name: 'time settings',
+    icon: Settings2,
+    defaultWidth: 380,
+    defaultHeight: 440,
+    component: TimeSettingsApp,
+  }
 ];
