@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react';
-import { NotebookPen, Calculator as CalculatorIcon, FolderOpen, Settings, AppWindow, Clock3, Settings2 } from 'lucide-react';
+import { NotebookPen, Calculator as CalculatorIcon, FolderOpen, Settings, AppWindow, Clock3, Settings2, Gamepad2, Sparkles } from 'lucide-react';
 import NotesApp from './Notes';
 import CalculatorApp from './CalculatorApp';
 import FilesApp from './Files';
@@ -7,6 +7,8 @@ import SettingsApp from './Settings';
 import TaskManagerApp from './TaskManager';
 import TimeApp from './Time';
 import TimeSettingsApp from './TimeSettings';
+import GamesApp from './Games';
+import WelcomeApp from './Welcome';
 
 export type AppDef = {
   id: string;
@@ -18,6 +20,14 @@ export type AppDef = {
 };
 
 export const apps: AppDef[] = [
+  {
+    id: 'welcome',
+    name: 'welcome',
+    icon: Sparkles,
+    defaultWidth: 560,
+    defaultHeight: 680,
+    component: WelcomeApp,
+  },
   {
     id: 'notes',
     name: 'notes',
@@ -47,7 +57,7 @@ export const apps: AppDef[] = [
     name: 'settings',
     icon: Settings,
     defaultWidth: 420,
-    defaultHeight: 400,
+    defaultHeight: 560,
     component: SettingsApp,
   },
   {
@@ -73,5 +83,13 @@ export const apps: AppDef[] = [
     defaultWidth: 380,
     defaultHeight: 440,
     component: TimeSettingsApp,
-  }
+  },
+  {
+    id: 'games',
+    name: 'games',
+    icon: Gamepad2,
+    defaultWidth: 520,
+    defaultHeight: 480,
+    component: GamesApp,
+  },
 ];

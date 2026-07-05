@@ -38,3 +38,21 @@ done:
 
 
 today: clean time and weather app: - a clock or time that shows clean time ;
+
+--- done
+
+now important: drag apps and they stay there like on windows which saves in localstorage
+
+adding games: wolfenstein, snake, tetris
+
+what else i want to add: taskbar settings for icons or no 
+right click to change background
+
+right now i need sound for:
+
+- open app
+- close an app
+- select something
+- entering the os like windows, i want something low cortisol or something
+
+after i need to add a welcome app or soemthing that doesnt get skipped it needs a hook and stuff

@@ -1,20 +1,85 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Window from './Window';
+import Notification from './Notification';
 import { apps } from '../apps/registry';
 import { WindowsProvider, useWindows } from '../state/windowsStore';
 import { useTheme } from '../state/themeStore';
+import { useIconPositions, type IconPos } from '../state/iconPositionsStore';
+import { playSound, playWelcomeSound, playNotificationSound, isFirstVisit, setSoundEnabled } from '../lib/sound';
 
 const QUICK_MENU_IDS = ['files', 'settings', 'task-manager'];
+const ICONS_PER_ROW = 5;
+const DARKMODE_NOTIF_KEY = 'deeros_darkmode_notif_shown';
+
+function defaultIconPos(index: number): IconPos {
+  const col = index % ICONS_PER_ROW;
+  const row = Math.floor(index / ICONS_PER_ROW);
+  return { x: 24 + col * 100, y: 24 + row * 100 };
+}
 
 function DesktopInner() {
   const { windows, order, openApp, closeWindow, focusWindow } = useWindows();
-  const { darkMode } = useTheme();
+  const { darkMode, toggleDarkMode } = useTheme();
+  const { iconPositions, setIconPosition } = useIconPositions();
   const [selectedApp, setSelectedApp] = useState<string | null>(null);
   const [quickMenuOpen, setQuickMenuOpen] = useState(false);
+  const [showDarkModeNotif, setShowDarkModeNotif] = useState(false);
+  const dragRef = useRef<{ id: string; startX: number; startY: number; origX: number; origY: number } | null>(null);
+  const draggedRef = useRef(false);
 
   const activeWindowId = order[order.length - 1];
   const quickMenuApps = QUICK_MENU_IDS.map((id) => apps.find((a) => a.id === id)!);
+
+  useEffect(() => {
+    if (isFirstVisit()) {
+      playWelcomeSound();
+      setSoundEnabled(false);
+      openApp('welcome');
+    } else {
+      playSound('enter');
+    }
+  }, []);
+
+  const startIconDrag = (appId: string, pos: IconPos) => (e: React.PointerEvent) => {
+    e.stopPropagation();
+    dragRef.current = { id: appId, startX: e.clientX, startY: e.clientY, origX: pos.x, origY: pos.y };
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const onIconDrag = (e: React.PointerEvent) => {
+    const drag = dragRef.current;
+    if (!drag) return;
+    const dx = e.clientX - drag.startX;
+    const dy = e.clientY - drag.startY;
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) draggedRef.current = true;
+    if (draggedRef.current) {
+      setIconPosition(drag.id, { x: drag.origX + dx, y: drag.origY + dy });
+    }
+  };
+
+  const endIconDrag = () => {
+    dragRef.current = null;
+  };
+
+  const handleCloseWindow = (winId: string, appId: string) => {
+    closeWindow(winId);
+    if (appId === 'welcome' && !localStorage.getItem(DARKMODE_NOTIF_KEY)) {
+      localStorage.setItem(DARKMODE_NOTIF_KEY, 'true');
+      playNotificationSound();
+      setShowDarkModeNotif(true);
+    }
+  };
+
+  const onIconClick = (appId: string) => (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (draggedRef.current) {
+      draggedRef.current = false;
+      return;
+    }
+    setSelectedApp(appId);
+    playSound('select');
+  };
 
   return (
     <div
@@ -30,47 +95,52 @@ function DesktopInner() {
         className="absolute inset-0 m-auto w-96 h-96 object-contain opacity-10 pointer-events-none select-none"
       />
 
-      <div className="relative grid grid-cols-1 gap-4 p-6 w-24">
-        {apps.map((app) => (
-          <button
-            key={app.id}
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectedApp(app.id);
-            }}
-            onDoubleClick={() => openApp(app.id)}
-            className={`flex flex-col items-center gap-1.5 select-none py-2 px-1 transition-colors rounded-deer-xl ${
-              selectedApp === app.id
-                ? 'text-moss'
-                : `text-deer-primary ${darkMode ? '' : 'hover:bg-deer-surface/70'}`
-            }`}
-          >
-            <span
-              className={`w-12 h-12 rounded-lg bg-deer-surface border shadow-sm flex items-center justify-center text-moss ${
-                selectedApp === app.id ? 'border-moss border-2 bg-moss/40' : 'border-deer-border'
+      <div className="absolute inset-0 pointer-events-none">
+        {apps.map((app, i) => {
+          const pos = iconPositions[app.id] ?? defaultIconPos(i);
+          return (
+            <button
+              key={app.id}
+              style={{ left: pos.x, top: pos.y }}
+              onPointerDown={startIconDrag(app.id, pos)}
+              onPointerMove={onIconDrag}
+              onPointerUp={endIconDrag}
+              onClick={onIconClick(app.id)}
+              onDoubleClick={() => openApp(app.id)}
+              className={`absolute w-20 flex flex-col items-center gap-1.5 select-none py-2 px-1 transition-colors rounded-deer-xl pointer-events-auto touch-none ${
+                selectedApp === app.id
+                  ? 'text-moss'
+                  : `text-deer-primary ${darkMode ? '' : 'hover:bg-deer-surface/70'}`
               }`}
             >
-              <app.icon size={24} />
-            </span>
-            <span className="text-xs">{app.name}</span>
-          </button>
-        ))}
+              <span
+                className={`w-12 h-12 rounded-lg bg-deer-surface border shadow-sm flex items-center justify-center text-moss ${
+                  selectedApp === app.id ? 'border-moss border-2 bg-moss/40' : 'border-deer-border'
+                }`}
+              >
+                <app.icon size={24} />
+              </span>
+              <span className="text-xs">{app.name}</span>
+            </button>
+          );
+        })}
       </div>
 
       <AnimatePresence>
         {windows.map((win, i) => {
           const app = apps.find((a) => a.id === win.appId)!;
           const Component = app.component;
+          const centered = app.id === 'welcome';
           return (
             <Window
               key={win.id}
               title={app.name}
-              initialX={160 + i * 24}
-              initialY={80 + i * 24}
+              initialX={centered ? (window.innerWidth - app.defaultWidth) / 2 : 160 + i * 24}
+              initialY={centered ? (window.innerHeight - app.defaultHeight) / 2 : 80 + i * 24}
               defaultWidth={app.defaultWidth}
               defaultHeight={app.defaultHeight}
               zIndex={order.indexOf(win.id)}
-              onClose={() => closeWindow(win.id)}
+              onClose={() => handleCloseWindow(win.id, app.id)}
               onFocus={() => focusWindow(win.id)}
             >
               <Component />
@@ -78,6 +148,16 @@ function DesktopInner() {
           );
         })}
       </AnimatePresence>
+
+      <Notification
+        message="want to turn on darkmode?"
+        show={showDarkModeNotif}
+        onConfirm={() => {
+          if (!darkMode) toggleDarkMode();
+          setShowDarkModeNotif(false);
+        }}
+        onDismiss={() => setShowDarkModeNotif(false)}
+      />
 
       <div
         className="absolute bottom-0 left-0 right-0 h-14 flex items-center gap-3 px-3 bg-deer-surface/90 backdrop-blur border-t border-deer-border"

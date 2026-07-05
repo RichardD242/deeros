@@ -4,12 +4,15 @@ import './index.css'
 import App from './App.tsx'
 import { ThemeProvider } from './state/themeStore'
 import { TimeSettingsProvider } from './state/timeSettingsStore'
+import { IconPositionsProvider } from './state/iconPositionsStore'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider>
       <TimeSettingsProvider>
-        <App />
+        <IconPositionsProvider>
+          <App />
+        </IconPositionsProvider>
       </TimeSettingsProvider>
     </ThemeProvider>
   </StrictMode>,

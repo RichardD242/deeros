@@ -1,4 +1,5 @@
 import { createContext, useContext, useRef, useState, type ReactNode } from 'react';
+import { playSound } from '../lib/sound';
 
 export type OpenWindow = {
   id: string;
@@ -24,11 +25,13 @@ export function WindowsProvider({ children }: { children: ReactNode }) {
     const id = `${appId}-${counter.current++}`;
     setWindows((w) => [...w, { id, appId }]);
     setOrder((o) => [...o, id]);
+    playSound('open');
   };
 
   const closeWindow = (id: string) => {
     setWindows((w) => w.filter((win) => win.id !== id));
     setOrder((o) => o.filter((i) => i !== id));
+    playSound('close');
   };
 
   const focusWindow = (id: string) => {
