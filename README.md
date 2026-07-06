@@ -24,7 +24,7 @@ npm run dev
 - go through the setup and use the apps
 - for more info check out the [manual](https://deeros.vercel.app/manual) subpage
 
-## docs
+## How it works
 
 - for doc check out the [docs](https://deeros.vercel.app/docs)
 
