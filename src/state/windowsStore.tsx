@@ -5,12 +5,13 @@ export type OpenWindow = {
   id: string;
   appId: string;
   pos?: { x: number; y: number };
+  data?: unknown;
 };
 
 type WindowsContextValue = {
   windows: OpenWindow[];
   order: string[];
-  openApp: (appId: string, pos?: { x: number; y: number }) => void;
+  openApp: (appId: string, pos?: { x: number; y: number }, data?: unknown) => void;
   closeWindow: (id: string) => void;
   focusWindow: (id: string) => void;
 };
@@ -22,9 +23,9 @@ export function WindowsProvider({ children }: { children: ReactNode }) {
   const [order, setOrder] = useState<string[]>([]);
   const counter = useRef(0);
 
-  const openApp = (appId: string, pos?: { x: number; y: number }) => {
+  const openApp = (appId: string, pos?: { x: number; y: number }, data?: unknown) => {
     const id = `${appId}-${counter.current++}`;
-    setWindows((w) => [...w, { id, appId, pos }]);
+    setWindows((w) => [...w, { id, appId, pos, data }]);
     setOrder((o) => [...o, id]);
     playSound('open');
   };

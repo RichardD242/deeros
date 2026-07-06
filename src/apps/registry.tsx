@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react';
-import { NotebookPen, Calculator as CalculatorIcon, FolderOpen, Settings, AppWindow, Clock3, Calendar, Settings2, Gamepad2, Sparkles, CloudRain, Image as ImageIcon, BookOpen, FileText, Library, ListTodo } from 'lucide-react';
+import { NotebookPen, Calculator as CalculatorIcon, FolderOpen, Settings, AppWindow, Clock3, Calendar, Settings2, Gamepad2, Sparkles, CloudRain, Image as ImageIcon, BookOpen, FileText, Library, ListTodo, Images, Frame } from 'lucide-react';
 import NotesApp from './Notes';
 import TodoApp from './Todo';
 import CalculatorApp from './CalculatorApp';
@@ -15,6 +15,8 @@ import WeatherSettingsApp from './WeatherSettings';
 import WallpaperApp from './Wallpaper';
 import ReaderApp from './Reader';
 import DateApp from './date';
+import GalleryApp from './gallery';
+import ImageApp from './Image';
 
 export type AppDef = {
   id: string;
@@ -22,8 +24,10 @@ export type AppDef = {
   icon: ComponentType<{ size?: number }>;
   defaultWidth: number;
   defaultHeight: number;
-  component?: ComponentType;
+  component?: ComponentType<{ data?: unknown; windowId?: string }>;
   href?: string;
+  hidden?: boolean;
+  resizable?: boolean;
 };
 
 export const apps: AppDef[] = [
@@ -146,6 +150,24 @@ export const apps: AppDef[] = [
     defaultWidth: 640,
     defaultHeight: 560,
     component: ReaderApp,
+  },
+  {
+    id: 'gallery',
+    name: 'gallery',
+    icon: Images,
+    defaultWidth: 640,
+    defaultHeight: 520,
+    component: GalleryApp,
+  },
+  {
+    id: 'image',
+    name: 'image',
+    icon: Frame,
+    defaultWidth: 560,
+    defaultHeight: 480,
+    component: ImageApp,
+    hidden: true,
+    resizable: true,
   },
   {
     id: 'docs',

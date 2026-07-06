@@ -197,6 +197,9 @@ export default function Docs() {
                                 <li>weather settings (for the weather app)</li>
                                 <li>wallpaper picker</li>
                                 <li>reader</li>
+                                <li>date</li>
+                                <li>todo list</li>
+                                <li>gallery and img app</li>
                             </ul>
                             <p>
                                 every app is a component registered in src/apps/registry.tsx

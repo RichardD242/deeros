@@ -131,7 +131,7 @@ function DesktopInner() {
       )}
 
       <div className="absolute inset-0 pointer-events-none">
-        {apps.map((app, i) => {
+        {apps.filter((app) => !app.hidden).map((app, i) => {
           const pos = iconPositions[app.id] ?? defaultIconPos(i);
           return (
             <button
@@ -174,11 +174,12 @@ function DesktopInner() {
               initialY={win.pos ? win.pos.y : centered ? (window.innerHeight - app.defaultHeight) / 2 : 80 + i * 24}
               defaultWidth={app.defaultWidth}
               defaultHeight={app.defaultHeight}
+              resizable={app.resizable}
               zIndex={order.indexOf(win.id)}
               onClose={() => handleCloseWindow(win.id, app.id)}
               onFocus={() => focusWindow(win.id)}
             >
-              <Component />
+              <Component data={win.data} windowId={win.id} />
             </Window>
           );
         })}

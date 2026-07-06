@@ -8,6 +8,7 @@ type Props = {
   initialY: number;
   defaultWidth: number;
   defaultHeight: number;
+  resizable?: boolean;
   onClose: () => void;
   onFocus: () => void;
   zIndex: number;
@@ -15,6 +16,10 @@ type Props = {
 };
 
 const MARGIN = 16;
+const MIN_WIDTH = 240;
+const MIN_HEIGHT = 180;
+
+type ResizeDir = 'n' | 's' | 'e' | 'w' | 'ne' | 'nw' | 'se' | 'sw';
 
 export default function Window({
   title,
@@ -22,17 +27,73 @@ export default function Window({
   initialY,
   defaultWidth,
   defaultHeight,
+  resizable = false,
   onClose,
   onFocus,
   zIndex,
   children,
 }: Props) {
   const [pos, setPos] = useState({ x: initialX, y: initialY });
-  const [size] = useState({ width: defaultWidth, height: defaultHeight });
+  const [size, setSize] = useState({ width: defaultWidth, height: defaultHeight });
   const [shaded, setShaded] = useState(false);
   const [maximized, setMaximized] = useState(false);
   const prevBounds = useRef({ x: initialX, y: initialY });
   const drag = useRef<{ startX: number; startY: number; origX: number; origY: number } | null>(null);
+  const resizeDrag = useRef<{
+    dir: ResizeDir;
+    startX: number;
+    startY: number;
+    startW: number;
+    startH: number;
+    startPosX: number;
+    startPosY: number;
+  } | null>(null);
+
+  const startResize = (dir: ResizeDir) => (e: React.PointerEvent) => {
+    e.stopPropagation();
+    onFocus();
+    resizeDrag.current = {
+      dir,
+      startX: e.clientX,
+      startY: e.clientY,
+      startW: size.width,
+      startH: size.height,
+      startPosX: pos.x,
+      startPosY: pos.y,
+    };
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const onResize = (e: React.PointerEvent) => {
+    const info = resizeDrag.current;
+    if (!info) return;
+
+    const dx = e.clientX - info.startX;
+    const dy = e.clientY - info.startY;
+
+    let width = info.startW;
+    let height = info.startH;
+    let x = info.startPosX;
+    let y = info.startPosY;
+
+    if (info.dir.includes('e')) width = Math.max(MIN_WIDTH, info.startW + dx);
+    if (info.dir.includes('s')) height = Math.max(MIN_HEIGHT, info.startH + dy);
+    if (info.dir.includes('w')) {
+      width = Math.max(MIN_WIDTH, info.startW - dx);
+      x = info.startPosX + (info.startW - width);
+    }
+    if (info.dir.includes('n')) {
+      height = Math.max(MIN_HEIGHT, info.startH - dy);
+      y = info.startPosY + (info.startH - height);
+    }
+
+    setSize({ width, height });
+    setPos({ x, y });
+  };
+
+  const endResize = () => {
+    resizeDrag.current = null;
+  };
 
   const startDrag = (e: React.PointerEvent) => {
     onFocus();
@@ -123,6 +184,59 @@ export default function Window({
       </div>
 
       {!shaded && <div className="flex-1 overflow-auto">{children}</div>}
+
+      {resizable && !maximized && !shaded && (
+        <>
+          <div
+            onPointerDown={startResize('n')}
+            onPointerMove={onResize}
+            onPointerUp={endResize}
+            className="absolute inset-x-2 top-0 h-1.5 cursor-ns-resize"
+          />
+          <div
+            onPointerDown={startResize('s')}
+            onPointerMove={onResize}
+            onPointerUp={endResize}
+            className="absolute inset-x-2 bottom-0 h-1.5 cursor-ns-resize"
+          />
+          <div
+            onPointerDown={startResize('w')}
+            onPointerMove={onResize}
+            onPointerUp={endResize}
+            className="absolute inset-y-2 left-0 w-1.5 cursor-ew-resize"
+          />
+          <div
+            onPointerDown={startResize('e')}
+            onPointerMove={onResize}
+            onPointerUp={endResize}
+            className="absolute inset-y-2 right-0 w-1.5 cursor-ew-resize"
+          />
+          <div
+            onPointerDown={startResize('nw')}
+            onPointerMove={onResize}
+            onPointerUp={endResize}
+            className="absolute left-0 top-0 h-3 w-3 cursor-nwse-resize"
+          />
+          <div
+            onPointerDown={startResize('ne')}
+            onPointerMove={onResize}
+            onPointerUp={endResize}
+            className="absolute right-0 top-0 h-3 w-3 cursor-nesw-resize"
+          />
+          <div
+            onPointerDown={startResize('sw')}
+            onPointerMove={onResize}
+            onPointerUp={endResize}
+            className="absolute left-0 bottom-0 h-3 w-3 cursor-nesw-resize"
+          />
+          <div
+            onPointerDown={startResize('se')}
+            onPointerMove={onResize}
+            onPointerUp={endResize}
+            className="absolute right-0 bottom-0 h-3 w-3 cursor-nwse-resize"
+          />
+        </>
+      )}
     </motion.div>
   );
 }
