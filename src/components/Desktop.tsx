@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Image as ImageIcon, Settings } from 'lucide-react';
 import Window from './Window';
 import Notification from './Notification';
 import { apps } from '../apps/registry';
 import { WindowsProvider, useWindows } from '../state/windowsStore';
 import { useTheme } from '../state/themeStore';
+import { useWallpaper } from '../state/wallpaperStore';
 import { useIconPositions, type IconPos } from '../state/iconPositionsStore';
 import { playSound, playWelcomeSound, playNotificationSound, isFirstVisit, setSoundEnabled } from '../lib/sound';
+import { darkWallpapers, lightWallpapers } from '../data/wallpapers';
 
 const QUICK_MENU_IDS = ['files', 'settings', 'task-manager'];
 const ICONS_PER_ROW = 5;
@@ -21,12 +24,15 @@ function defaultIconPos(index: number): IconPos {
 function DesktopInner() {
   const { windows, order, openApp, closeWindow, focusWindow } = useWindows();
   const { darkMode, toggleDarkMode } = useTheme();
+  const { wallpaperId, wallpaperSrc, setWallpaper } = useWallpaper();
   const { iconPositions, setIconPosition } = useIconPositions();
   const [selectedApp, setSelectedApp] = useState<string | null>(null);
   const [quickMenuOpen, setQuickMenuOpen] = useState(false);
   const [showDarkModeNotif, setShowDarkModeNotif] = useState(false);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
   const dragRef = useRef<{ id: string; startX: number; startY: number; origX: number; origY: number } | null>(null);
   const draggedRef = useRef(false);
+  const mountedRef = useRef(false);
 
   const activeWindowId = order[order.length - 1];
   const quickMenuApps = QUICK_MENU_IDS.map((id) => apps.find((a) => a.id === id)!);
@@ -40,6 +46,20 @@ function DesktopInner() {
       playSound('enter');
     }
   }, []);
+
+  useEffect(() => {
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      return;
+    }
+    const from = darkMode ? lightWallpapers : darkWallpapers;
+    const to = darkMode ? darkWallpapers : lightWallpapers;
+    const index = from.findIndex((w) => w.id === wallpaperId);
+    if (index !== -1) {
+      const match = to[index];
+      setWallpaper(match.id, match.src);
+    }
+  }, [darkMode]);
 
   const startIconDrag = (appId: string, pos: IconPos) => (e: React.PointerEvent) => {
     e.stopPropagation();
@@ -78,7 +98,15 @@ function DesktopInner() {
       return;
     }
     setSelectedApp(appId);
-    playSound('select');
+  };
+
+  const launchApp = (appId: string) => {
+    const app = apps.find((a) => a.id === appId)!;
+    if (app.href) {
+      window.open(app.href, '_blank');
+    } else {
+      openApp(appId);
+    }
   };
 
   return (
@@ -87,13 +115,20 @@ function DesktopInner() {
       onClick={() => {
         setSelectedApp(null);
         setQuickMenuOpen(false);
+        setContextMenu(null);
+      }}
+      onContextMenu={(e) => {
+        e.preventDefault();
+        setContextMenu({ x: e.clientX, y: e.clientY });
       }}
     >
-      <img
-        src="/transparentdeer.png"
-        alt=""
-        className="absolute inset-0 m-auto w-96 h-96 object-contain opacity-10 pointer-events-none select-none"
-      />
+      {!wallpaperSrc && (
+        <img
+          src="/transparentdeer.png"
+          alt=""
+          className="absolute inset-0 m-auto w-96 h-96 object-contain opacity-10 pointer-events-none select-none"
+        />
+      )}
 
       <div className="absolute inset-0 pointer-events-none">
         {apps.map((app, i) => {
@@ -106,7 +141,7 @@ function DesktopInner() {
               onPointerMove={onIconDrag}
               onPointerUp={endIconDrag}
               onClick={onIconClick(app.id)}
-              onDoubleClick={() => openApp(app.id)}
+              onDoubleClick={() => launchApp(app.id)}
               className={`absolute w-20 flex flex-col items-center gap-1.5 select-none py-2 px-1 transition-colors rounded-deer-xl pointer-events-auto touch-none ${
                 selectedApp === app.id
                   ? 'text-moss'
@@ -129,14 +164,14 @@ function DesktopInner() {
       <AnimatePresence>
         {windows.map((win, i) => {
           const app = apps.find((a) => a.id === win.appId)!;
-          const Component = app.component;
+          const Component = app.component!;
           const centered = app.id === 'welcome';
           return (
             <Window
               key={win.id}
               title={app.name}
-              initialX={centered ? (window.innerWidth - app.defaultWidth) / 2 : 160 + i * 24}
-              initialY={centered ? (window.innerHeight - app.defaultHeight) / 2 : 80 + i * 24}
+              initialX={win.pos ? win.pos.x : centered ? (window.innerWidth - app.defaultWidth) / 2 : 160 + i * 24}
+              initialY={win.pos ? win.pos.y : centered ? (window.innerHeight - app.defaultHeight) / 2 : 80 + i * 24}
               defaultWidth={app.defaultWidth}
               defaultHeight={app.defaultHeight}
               zIndex={order.indexOf(win.id)}
@@ -148,6 +183,35 @@ function DesktopInner() {
           );
         })}
       </AnimatePresence>
+
+      {contextMenu && (
+        <div
+          style={{ left: contextMenu.x, top: contextMenu.y }}
+          className="absolute z-50 w-48 rounded-deer-xl border border-deer-border bg-deer-surface p-1.5 shadow-xl"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            onClick={() => {
+              openApp('wallpaper', contextMenu);
+              setContextMenu(null);
+            }}
+            className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-deer-primary hover:bg-deer-bg transition-colors"
+          >
+            <ImageIcon size={16} />
+            change background
+          </button>
+          <button
+            onClick={() => {
+              openApp('settings', contextMenu);
+              setContextMenu(null);
+            }}
+            className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-deer-primary hover:bg-deer-bg transition-colors"
+          >
+            <Settings size={16} />
+            settings
+          </button>
+        </div>
+      )}
 
       <Notification
         message="want to turn on darkmode?"

@@ -56,3 +56,17 @@ right now i need sound for:
 - entering the os like windows, i want something low cortisol or something
 
 after i need to add a welcome app or soemthing that doesnt get skipped it needs a hook and stuff
+
+welcome is done but i added a browser but its not working so i removed it
+
+today: 
+
+- reading mode like url and shows only text nothing else (adjust lioke text font size low cortisol)
+
+- DOCS and MANUAL need to be added asap then i need to deploy project
+
+- wallpaper like you can upload its a personal desktop and like a universal local saved local settings
+
+needs to be added: right click to change wallpaper i would say is better than an app or i add both both is good i think - added app now working on right click
+
+- phone ui will not be implemented because nobody needs an os on iphone

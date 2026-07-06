@@ -35,7 +35,8 @@ export default function WelcomeApp() {
                         </a>
 
                         <a
-                            href="#"
+                            href="/manual"
+                            target="_blank"
                             className="flex items-center justify-between rounded-deer-xl bg-deer-surface border border-deer-border p-4 hover:border-moss hover:bg-moss-hover/10 transition"
                         >
                             <div className="flex items-center gap-3">
@@ -46,7 +47,8 @@ export default function WelcomeApp() {
                         </a>
 
                         <a
-                            href="#"
+                            href="/docs"
+                            target="_blank"
                             className="flex items-center justify-between rounded-deer-xl bg-deer-surface border border-deer-border p-4 hover:border-moss hover:bg-moss-hover/10 transition"
                         >
                             <div className="flex items-center gap-3">

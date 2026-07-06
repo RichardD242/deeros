@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react';
-import { NotebookPen, Calculator as CalculatorIcon, FolderOpen, Settings, AppWindow, Clock3, Settings2, Gamepad2, Sparkles, CloudRain } from 'lucide-react';
+import { NotebookPen, Calculator as CalculatorIcon, FolderOpen, Settings, AppWindow, Clock3, Settings2, Gamepad2, Sparkles, CloudRain, Image as ImageIcon, BookOpen, FileText, Library } from 'lucide-react';
 import NotesApp from './Notes';
 import CalculatorApp from './CalculatorApp';
 import FilesApp from './Files';
@@ -11,6 +11,8 @@ import GamesApp from './Games';
 import WelcomeApp from './Welcome';
 import WeatherApp from './Weather';
 import WeatherSettingsApp from './WeatherSettings';
+import WallpaperApp from './Wallpaper';
+import ReaderApp from './Reader';
 
 export type AppDef = {
   id: string;
@@ -18,7 +20,8 @@ export type AppDef = {
   icon: ComponentType<{ size?: number }>;
   defaultWidth: number;
   defaultHeight: number;
-  component: ComponentType;
+  component?: ComponentType;
+  href?: string;
 };
 
 export const apps: AppDef[] = [
@@ -109,5 +112,37 @@ export const apps: AppDef[] = [
     defaultWidth: 380,
     defaultHeight: 260,
     component: WeatherSettingsApp,
+  },
+  {
+    id: 'wallpaper',
+    name: 'wallpaper',
+    icon: ImageIcon,
+    defaultWidth: 700,
+    defaultHeight: 640,
+    component: WallpaperApp,
+  },
+  {
+    id: 'reader',
+    name: 'reader',
+    icon: BookOpen,
+    defaultWidth: 640,
+    defaultHeight: 560,
+    component: ReaderApp,
+  },
+  {
+    id: 'docs',
+    name: 'docs',
+    icon: FileText,
+    defaultWidth: 0,
+    defaultHeight: 0,
+    href: '/docs',
+  },
+  {
+    id: 'manual',
+    name: 'manual',
+    icon: Library,
+    defaultWidth: 0,
+    defaultHeight: 0,
+    href: '/manual',
   },
 ];

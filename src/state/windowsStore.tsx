@@ -4,12 +4,13 @@ import { playSound } from '../lib/sound';
 export type OpenWindow = {
   id: string;
   appId: string;
+  pos?: { x: number; y: number };
 };
 
 type WindowsContextValue = {
   windows: OpenWindow[];
   order: string[];
-  openApp: (appId: string) => void;
+  openApp: (appId: string, pos?: { x: number; y: number }) => void;
   closeWindow: (id: string) => void;
   focusWindow: (id: string) => void;
 };
@@ -21,9 +22,9 @@ export function WindowsProvider({ children }: { children: ReactNode }) {
   const [order, setOrder] = useState<string[]>([]);
   const counter = useRef(0);
 
-  const openApp = (appId: string) => {
+  const openApp = (appId: string, pos?: { x: number; y: number }) => {
     const id = `${appId}-${counter.current++}`;
-    setWindows((w) => [...w, { id, appId }]);
+    setWindows((w) => [...w, { id, appId, pos }]);
     setOrder((o) => [...o, id]);
     playSound('open');
   };

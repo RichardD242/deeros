@@ -4,12 +4,14 @@ import Button from './components/Button';
 import SignUpModal from './components/SignUpModal';
 import LockScreen from './components/LockScreen';
 import Desktop from './components/Desktop';
+import { useWallpaper } from './state/wallpaperStore';
 
 const green = '#6F8A71';
 const PASSWORD_KEY = 'deeros_persona_password';
 const NAME_KEY = 'deeros_persona_name';
 
 export default function App() {
+  const { wallpaperSrc } = useWallpaper();
   const [entered, setEntered] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
   const [signUpStep, setSignUpStep] = useState<'password' | 'name'>('password');
@@ -175,7 +177,8 @@ export default function App() {
           ) : loggedIn && desktopStage === 'canvas' ? (
             <motion.div
               key="canvas"
-              className="w-full h-full bg-deer-bg"
+              className="w-full h-full bg-deer-bg bg-cover bg-center bg-no-repeat"
+              style={wallpaperSrc ? { backgroundImage: `url(${wallpaperSrc})` } : undefined}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1, transition: { duration: 0.5, ease: 'easeOut' } }}
             >

@@ -1,13 +1,12 @@
-import { useState } from "react";
 import { Moon, Sun, Volume2, VolumeX } from "lucide-react";
 import { useTheme } from "../state/themeStore";
 import { useIconPositions } from "../state/iconPositionsStore";
-import { isSoundEnabled, setSoundEnabled } from "../lib/sound";
+import { useSoundSettings } from "../state/soundSettingsStore";
 
 export default function SettingsApp() {
     const { darkMode, toggleDarkMode } = useTheme();
     const { resetIconPositions } = useIconPositions();
-    const [sounds, setSounds] = useState(isSoundEnabled);
+    const { soundEnabled, toggleSoundEnabled } = useSoundSettings();
 
     return (
         <div className="h-full bg-deer-surface text-deer-primary p-5">
@@ -44,27 +43,24 @@ export default function SettingsApp() {
 
                 <div className="flex items-center justify-between rounded-2xl bg-deer-bg p-4">
                     <div className="flex items-center gap-3">
-                        {sounds ? <Volume2 size={22} /> : <VolumeX size={22} />}
+                        {soundEnabled ? <Volume2 size={22} /> : <VolumeX size={22} />}
                         <div>
                             <p className="font-medium">sounds</p>
                             <p className="text-sm opacity-70">
-                                {sounds ? "enabled" : "disabled"}
+                                {soundEnabled ? "enabled" : "disabled"}
                             </p>
                         </div>
                     </div>
 
                     <button
-                        onClick={() => {
-                            setSoundEnabled(!sounds);
-                            setSounds(!sounds);
-                        }}
+                        onClick={toggleSoundEnabled}
                         className={`relative h-7 w-12 rounded-full transition ${
-                            sounds ? "bg-moss" : "bg-deer-border"
+                            soundEnabled ? "bg-moss" : "bg-deer-border"
                         }`}
                     >
                         <span
                             className={`absolute top-1 h-5 w-5 rounded-full bg-white transition ${
-                                sounds ? "left-6" : "left-1"
+                                soundEnabled ? "left-6" : "left-1"
                             }`}
                         />
                     </button>
