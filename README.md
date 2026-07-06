@@ -40,4 +40,4 @@ i used ai for:
 
 little preview of the desktop
 
-![DeerOs Preview Pic](/puplic/deerospreview.png)
+![DeerOs Preview Pic](/public/deerospreview.png)
