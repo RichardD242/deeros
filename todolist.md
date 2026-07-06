@@ -70,3 +70,6 @@ today:
 needs to be added: right click to change wallpaper i would say is better than an app or i add both both is good i think - added app now working on right click
 
 - phone ui will not be implemented because nobody needs an os on iphone
+
+- i think last think that needs to be done is screenshots and finishing up the readme for good
+- maybe add low cortisol easter eggs because everything cool has easter eggs

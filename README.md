@@ -35,3 +35,9 @@ i used ai for:
 1. inline suggestions in vs
 2. troubleshooting
 3. wallpapr background like the forest and mountains
+
+## preview
+
+little preview of the desktop
+
+![DeerOs Preview Pic](/puplic/deerospreview.png)
