@@ -6,7 +6,7 @@ export default function WelcomeApp() {
 
             <div className="w-full">
                 <img
-                    src="/public/deeros-banner.png"
+                    src="/deeros-banner.png"
                     alt="deeros banner"
                     className="w-full h-auto object-contain"
                 />

@@ -20,13 +20,13 @@ npm run dev
 
 ## How to use
 
-- go to [deeros]()
+- go to [deeros](https://deeros.vercel.app/)
 - go through the setup and use the apps
-- for more info check out the [manual]() subpage
+- for more info check out the [manual](https://deeros.vercel.app/manual) subpage
 
 ## docs
 
-- for doc check out the [docs]()
+- for doc check out the [docs](https://deeros.vercel.app/docs)
 
 ## ai use
 
