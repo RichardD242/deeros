@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react';
-import { NotebookPen, Calculator as CalculatorIcon, FolderOpen, Settings, AppWindow, Clock3, Settings2, Gamepad2, Sparkles, CloudRain, Image as ImageIcon, BookOpen, FileText, Library } from 'lucide-react';
+import { NotebookPen, Calculator as CalculatorIcon, FolderOpen, Settings, AppWindow, Clock3, Calendar, Settings2, Gamepad2, Sparkles, CloudRain, Image as ImageIcon, BookOpen, FileText, Library, ListTodo } from 'lucide-react';
 import NotesApp from './Notes';
+import TodoApp from './Todo';
 import CalculatorApp from './CalculatorApp';
 import FilesApp from './Files';
 import SettingsApp from './Settings';
@@ -13,6 +14,7 @@ import WeatherApp from './Weather';
 import WeatherSettingsApp from './WeatherSettings';
 import WallpaperApp from './Wallpaper';
 import ReaderApp from './Reader';
+import DateApp from './date';
 
 export type AppDef = {
   id: string;
@@ -40,6 +42,14 @@ export const apps: AppDef[] = [
     defaultWidth: 420,
     defaultHeight: 380,
     component: NotesApp,
+  },
+  {
+    id: 'todo',
+    name: 'todo',
+    icon: ListTodo,
+    defaultWidth: 420,
+    defaultHeight: 520,
+    component: TodoApp,
   },
   {
     id: 'calculator',
@@ -80,6 +90,14 @@ export const apps: AppDef[] = [
     defaultWidth: 380,
     defaultHeight: 420,
     component: TimeApp,
+  },
+  {
+    id: 'date',
+    name: 'date',
+    icon: Calendar,
+    defaultWidth: 380,
+    defaultHeight: 420,
+    component: DateApp,
   },
   {
     id: 'time-settings',
