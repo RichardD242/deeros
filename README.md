@@ -41,3 +41,7 @@ i used ai for:
 little preview of the desktop
 
 ![DeerOs Preview Pic](/public/deerospreview.png)
+
+## motivation
+
+DeerOs was designed to prevent cortisol spikes, we know that traditional OS cause high cortisol in us, so i decided to build this web desktop. The deer is a symbol of low cortisol.
